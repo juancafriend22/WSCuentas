@@ -1,4 +1,4 @@
-package com.devChallengue.WSCuentas.modelo;
+package com.devChallengue.WSCuentas.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,8 +18,6 @@ public class Cuenta {
     private String tipoCuenta;
     private Double SaldoInicial;
     private Boolean estado;
-
-
-    @Column(name = "cliente_id")
+    // Se almacena el id del cliente (obtenido del microservicio de clientes)
     private Long clienteId;
 }

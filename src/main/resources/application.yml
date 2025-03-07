@@ -39,3 +39,6 @@ feign:
       default:
         connectTimeout: 5000
         readTimeout: 5000
+clients:
+  service:
+    url: "http://localhost:8081"
