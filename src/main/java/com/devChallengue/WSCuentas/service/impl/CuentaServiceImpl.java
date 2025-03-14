@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ICuentaServiceImpl implements ICuentaService {
+public class CuentaServiceImpl implements ICuentaService {
 
     @Autowired
     private CuentaRepository cuentaRepository;
@@ -28,32 +28,34 @@ public class ICuentaServiceImpl implements ICuentaService {
     @Override
     public CuentaDTO createCuenta(CuentaDTO cuentaDTO) {
         // Validar que el cliente exista utilizando el Feign Client
-        ClienteFeignDTO cliente = clienteFeign.getClienteById(cuentaDTO.getClienteFeignDTO().getId());
-        if (cliente == null) {
+        ClienteFeignDTO clienteF = clienteFeign.getClienteById(cuentaDTO.getClienteFeignDTO().getId());
+        if (clienteF == null) {
             throw new RuntimeException("El cliente con ID " + cuentaDTO.getClienteFeignDTO().getId() + " no existe");
         }
-        cliente.setNombre(cuentaDTO.getClienteFeignDTO().getNombre());
-        cliente.setClienteId(cuentaDTO.getClienteFeignDTO().getClienteId());
         // Convertir Request DTO a Entidad
         Cuenta cuenta = cuentaMapper.toEntity(cuentaDTO);
         // Guardar la entidad en la base de datos
-        Cuenta saved = cuentaRepository.save(cuenta);
-        // Convertir Entidad a Response DTO
-        return cuentaMapper.toDTO(saved);
+        Cuenta cuentaSaved = cuentaRepository.save(cuenta);
+        CuentaDTO savedCuentaDTO = cuentaMapper.toDTO(cuentaSaved);
+        savedCuentaDTO.setClienteFeignDTO(clienteF);
+        return savedCuentaDTO;
     }
 
     @Override
     public CuentaDTO updateCuenta(Long id, CuentaDTO cuentaDTO) {
         Cuenta cuenta = cuentaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
-        // Actualizamos los campos deseados
-        cuenta.setNumeroCuenta(cuentaDTO.getNumeroCuenta());
-        cuenta.setTipoCuenta(cuentaDTO.getTipoCuenta());
-        cuenta.setSaldoInicial(cuentaDTO.getSaldoInicial());
-        cuenta.setEstado(cuentaDTO.getEstado());
-        cuenta.setClienteId(cuentaDTO.getClienteFeignDTO().getId());
-        Cuenta updated = cuentaRepository.save(cuenta);
-        return cuentaMapper.toDTO(updated);
+        ClienteFeignDTO clienteF = clienteFeign.getClienteById(cuentaDTO.getClienteFeignDTO().getId());
+        if (clienteF == null) {
+            throw new RuntimeException("El cliente con ID " + cuentaDTO.getClienteFeignDTO().getId() + " no existe");
+        }
+        // Convertir Request DTO a Entidad
+        Cuenta cuentaU = cuentaMapper.toEntity(cuentaDTO);
+        // Guardar la entidad en la base de datos
+        cuenta = cuentaRepository.save(cuentaU);
+
+        cuentaDTO.setClienteFeignDTO(clienteF);
+        return cuentaDTO;
     }
 
     @Override

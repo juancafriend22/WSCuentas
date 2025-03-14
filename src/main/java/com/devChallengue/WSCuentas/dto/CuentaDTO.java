@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 
 public class CuentaDTO {
-
+    private Long id;
     private String numeroCuenta;
     private String tipoCuenta;
     private Double saldoInicial;

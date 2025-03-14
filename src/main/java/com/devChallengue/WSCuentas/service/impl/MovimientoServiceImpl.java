@@ -10,13 +10,14 @@ import com.devChallengue.WSCuentas.service.IMovimientoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class IMovimientoServiceImpl implements IMovimientoService {
+public class MovimientoServiceImpl implements IMovimientoService {
 
     @Autowired
     private MovimientoRepository movimientoRepository;
@@ -43,14 +44,14 @@ public class IMovimientoServiceImpl implements IMovimientoService {
 
         movimiento.setSaldo(nuevoSaldo);
         movimiento.setCuenta(cuenta);
-        movimiento.setFecha(LocalDateTime.now());
+        movimiento.setFecha(LocalDate.now());
 
         Movimiento saved = movimientoRepository.save(movimiento);
         return movimientoMapper.toDTO(saved);
     }
 
     @Override
-    public List<MovimientoDTO> getMovimientosByCuentaAndFecha(Long cuentaId, Date fechaInicio, Date fechaFin) {
+    public List<MovimientoDTO> getMovimientosByCuentaAndFecha(Long cuentaId, LocalDate fechaInicio, LocalDate fechaFin) {
         List<Movimiento> movimientos = movimientoRepository.findByCuentaIdAndFechaBetween(cuentaId, fechaInicio, fechaFin);
         return movimientos.stream().map(movimientoMapper::toDTO).collect(Collectors.toList());
     }

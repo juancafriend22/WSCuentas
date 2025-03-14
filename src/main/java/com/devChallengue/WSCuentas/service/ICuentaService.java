@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+
 public interface ICuentaService {
     CuentaDTO createCuenta(CuentaDTO cuentaDTO);
     CuentaDTO updateCuenta(Long id, CuentaDTO cuentaDTO);

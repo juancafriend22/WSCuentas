@@ -9,20 +9,12 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface CuentaMapper {
 
-    @Mapping(target = "clienteFeignDTO", source = "clienteId", qualifiedByName = "longToClienteFeignDTO")
+    @Mapping(source = "clienteId", target = "clienteFeignDTO.id")
     CuentaDTO toDTO(Cuenta cuenta);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "clienteId", source = "clienteFeignDTO.id")
+    //@Mapping(target = "id", ignore = true)
+    @Mapping(source = "clienteFeignDTO.id", target = "clienteId")
     Cuenta toEntity(CuentaDTO dto);
 
-    @Named("longToClienteFeignDTO")
-    default ClienteFeignDTO longToClienteFeignDTO(Long clienteId) {
-        if (clienteId == null) {
-            return null;
-        }
-        ClienteFeignDTO dto = new ClienteFeignDTO();
-        dto.setId(clienteId);
-        return dto;
-    }
+
 }
