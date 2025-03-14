@@ -6,7 +6,7 @@ import com.devChallengue.WSCuentas.model.Cuenta;
 import com.devChallengue.WSCuentas.model.Movimiento;
 import com.devChallengue.WSCuentas.repository.CuentaRepository;
 import com.devChallengue.WSCuentas.repository.MovimientoRepository;
-import com.devChallengue.WSCuentas.service.MovimientoService;
+import com.devChallengue.WSCuentas.service.IMovimientoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class MovimientoServiceImpl implements MovimientoService {
+public class IMovimientoServiceImpl implements IMovimientoService {
 
     @Autowired
     private MovimientoRepository movimientoRepository;

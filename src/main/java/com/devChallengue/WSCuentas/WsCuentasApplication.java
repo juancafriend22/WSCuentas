@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
-@EnableFeignClients(basePackages = "com.devChallengue.WSCuentas.cliente")
+@EnableFeignClients(basePackages = "com.devChallengue.WSCuentas.service")
 public class WsCuentasApplication {
 
 	public static void main(String[] args) {

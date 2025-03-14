@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ClienteFeignDTO {
 
+public class ClienteFeignDTO {
         private Long id;
         private String nombre;
         private String clienteId;

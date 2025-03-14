@@ -1,12 +1,12 @@
 package com.devChallengue.WSCuentas.service.impl;
 
-import com.devChallengue.WSCuentas.cliente.ClienteFeignClient;
+import com.devChallengue.WSCuentas.service.ClienteFeignClient;
 import com.devChallengue.WSCuentas.dto.ClienteFeignDTO;
 import com.devChallengue.WSCuentas.dto.CuentaDTO;
 import com.devChallengue.WSCuentas.mapper.CuentaMapper;
 import com.devChallengue.WSCuentas.model.Cuenta;
 import com.devChallengue.WSCuentas.repository.CuentaRepository;
-import com.devChallengue.WSCuentas.service.CuentaService;
+import com.devChallengue.WSCuentas.service.ICuentaService;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CuentaServiceImpl implements CuentaService {
+public class ICuentaServiceImpl implements ICuentaService {
 
     @Autowired
     private CuentaRepository cuentaRepository;
@@ -32,6 +32,8 @@ public class CuentaServiceImpl implements CuentaService {
         if (cliente == null) {
             throw new RuntimeException("El cliente con ID " + cuentaDTO.getClienteFeignDTO().getId() + " no existe");
         }
+        cliente.setNombre(cuentaDTO.getClienteFeignDTO().getNombre());
+        cliente.setClienteId(cuentaDTO.getClienteFeignDTO().getClienteId());
         // Convertir Request DTO a Entidad
         Cuenta cuenta = cuentaMapper.toEntity(cuentaDTO);
         // Guardar la entidad en la base de datos

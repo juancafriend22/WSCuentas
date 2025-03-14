@@ -11,7 +11,7 @@ public class CuentaDTO {
 
     private String numeroCuenta;
     private String tipoCuenta;
-    private Double SaldoInicial;
+    private Double saldoInicial;
     private Boolean estado;
     private ClienteFeignDTO clienteFeignDTO;
 
