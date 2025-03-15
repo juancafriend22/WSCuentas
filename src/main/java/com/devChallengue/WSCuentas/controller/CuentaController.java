@@ -2,6 +2,7 @@ package com.devChallengue.WSCuentas.controller;
 
 import com.devChallengue.WSCuentas.dto.CuentaDTO;
 import com.devChallengue.WSCuentas.mapper.CuentaMapper;
+import com.devChallengue.WSCuentas.model.Cuenta;
 import com.devChallengue.WSCuentas.service.ICuentaService;
 import com.devChallengue.WSCuentas.service.impl.CuentaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,7 @@
 package com.devChallengue.WSCuentas.service.impl;
 
+import com.devChallengue.WSCuentas.excepciones.AccountCreationException;
+import com.devChallengue.WSCuentas.excepciones.AccountNotFoundExcepcion;
 import com.devChallengue.WSCuentas.service.ClienteFeignClient;
 import com.devChallengue.WSCuentas.dto.ClienteFeignDTO;
 import com.devChallengue.WSCuentas.dto.CuentaDTO;
@@ -27,54 +29,81 @@ public class CuentaServiceImpl implements ICuentaService {
 
     @Override
     public CuentaDTO createCuenta(CuentaDTO cuentaDTO) {
-        // Validar que el cliente exista utilizando el Feign Client
+
         ClienteFeignDTO clienteF = clienteFeign.getClienteById(cuentaDTO.getClienteFeignDTO().getId());
         if (clienteF == null) {
-            throw new RuntimeException("El cliente con ID " + cuentaDTO.getClienteFeignDTO().getId() + " no existe");
+            throw new AccountNotFoundExcepcion("El cliente con ID " + cuentaDTO.getClienteFeignDTO().getId() + " no existe");
+
         }
-        // Convertir Request DTO a Entidad
-        Cuenta cuenta = cuentaMapper.toEntity(cuentaDTO);
-        // Guardar la entidad en la base de datos
-        Cuenta cuentaSaved = cuentaRepository.save(cuenta);
-        CuentaDTO savedCuentaDTO = cuentaMapper.toDTO(cuentaSaved);
-        savedCuentaDTO.setClienteFeignDTO(clienteF);
-        return savedCuentaDTO;
+        try {
+            Cuenta cuenta = cuentaMapper.toEntity(cuentaDTO);
+
+            Cuenta cuentaSaved = cuentaRepository.save(cuenta);
+            CuentaDTO savedCuentaDTO = cuentaMapper.toDTO(cuentaSaved);
+            savedCuentaDTO.setClienteFeignDTO(clienteF);
+            return savedCuentaDTO;
+        } catch (Exception e) {
+            throw new AccountCreationException("Error al crear cuenta :( ");
+        }
     }
 
     @Override
     public CuentaDTO updateCuenta(Long id, CuentaDTO cuentaDTO) {
-        Cuenta cuenta = cuentaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+        Cuenta cuentaExistente = cuentaRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundExcepcion("Cuenta " + id + " no encontrada"));
         ClienteFeignDTO clienteF = clienteFeign.getClienteById(cuentaDTO.getClienteFeignDTO().getId());
         if (clienteF == null) {
-            throw new RuntimeException("El cliente con ID " + cuentaDTO.getClienteFeignDTO().getId() + " no existe");
-        }
-        // Convertir Request DTO a Entidad
-        Cuenta cuentaU = cuentaMapper.toEntity(cuentaDTO);
-        // Guardar la entidad en la base de datos
-        cuenta = cuentaRepository.save(cuentaU);
+            throw new AccountNotFoundExcepcion("El cliente con ID " + cuentaDTO.getClienteFeignDTO().getId() + " no existe");
 
-        cuentaDTO.setClienteFeignDTO(clienteF);
-        return cuentaDTO;
+        }
+        try {
+            cuentaExistente.setNumeroCuenta(cuentaDTO.getNumeroCuenta());
+            cuentaExistente.setTipoCuenta(cuentaDTO.getTipoCuenta());
+            cuentaExistente.setEstado(cuentaDTO.getEstado());
+            cuentaExistente.setSaldoInicial(cuentaDTO.getSaldoInicial());
+            cuentaExistente.setEstado(cuentaDTO.getEstado());
+            cuentaExistente.setClienteId(cuentaDTO.getClienteFeignDTO().getId());
+
+            Cuenta cuentaActu = cuentaRepository.save(cuentaExistente);
+
+            // Convierte la entidad actualizada de regreso a dto
+            CuentaDTO updatedCuentaDTO = cuentaMapper.toDTO(cuentaActu);
+            updatedCuentaDTO.setClienteFeignDTO(clienteF); // Ensure client info is set in DTO
+            return updatedCuentaDTO;
+
+
+        } catch (Exception e) {
+            throw new AccountCreationException("Error en actualizacion de cuenta");
+
+        }
     }
 
     @Override
     public void deleteCuenta(Long id) {
+        if(!cuentaRepository.existsById(id)){
+            throw new AccountNotFoundExcepcion("Cuenta "+id+" no encontrada");
+        }
         cuentaRepository.deleteById(id);
     }
 
     @Override
     public CuentaDTO getCuentaById(Long id) {
         Cuenta cuenta = cuentaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+                .orElseThrow(() -> new AccountNotFoundExcepcion("Cuenta "+id+" no encontrada"));
+
         return cuentaMapper.toDTO(cuenta);
     }
 
     @Override
     public List<CuentaDTO> getAllCuentas() {
-        return cuentaRepository.findAll()
+        List <Cuenta> accounts = cuentaRepository.findAll();
+        if(accounts.isEmpty()){
+            throw new RuntimeException("No existen cuentas guardadas");
+        }
+        return accounts
                 .stream()
                 .map(cuentaMapper::toDTO)
                 .collect(Collectors.toList());
+
     }
 }
