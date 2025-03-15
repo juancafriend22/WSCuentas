@@ -56,7 +56,6 @@ public class MovimientoServiceImpl implements IMovimientoService {
             cuentaRepository.save(cuenta);
             movimiento.setSaldo(nuevoSaldo);
             movimiento.setCuenta(cuenta);
-            movimiento.setFecha(LocalDate.now());
             Movimiento saved = movimientoRepository.save(movimiento);
             return movimientoMapper.toDTO(saved);
         }catch(Exception ex){

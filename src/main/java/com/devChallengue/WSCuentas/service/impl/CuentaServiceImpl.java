@@ -88,21 +88,35 @@ public class CuentaServiceImpl implements ICuentaService {
 
     @Override
     public CuentaDTO getCuentaById(Long id) {
+        // Obtener la cuenta desde la base de datos
         Cuenta cuenta = cuentaRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundExcepcion("Cuenta "+id+" no encontrada"));
+                .orElseThrow(() -> new AccountNotFoundExcepcion("Cuenta " + id + " no encontrada"));
 
-        return cuentaMapper.toDTO(cuenta);
+        // Mapear la cuenta a CuentaDTO
+        CuentaDTO cuentaDTO = cuentaMapper.toDTO(cuenta);
+
+        // Obtener la información del cliente usando el Feign Client
+        ClienteFeignDTO clienteF = clienteFeign.getClienteById(cuenta.getClienteId());
+        cuentaDTO.setClienteFeignDTO(clienteF);
+
+        return cuentaDTO;
+
     }
 
     @Override
     public List<CuentaDTO> getAllCuentas() {
-        List <Cuenta> accounts = cuentaRepository.findAll();
-        if(accounts.isEmpty()){
+        List<Cuenta> accounts = cuentaRepository.findAll();
+        if (accounts.isEmpty()) {
             throw new RuntimeException("No existen cuentas guardadas");
         }
-        return accounts
-                .stream()
-                .map(cuentaMapper::toDTO)
+        return accounts.stream()
+                .map(cuenta -> {
+                    CuentaDTO cuentaDTO = cuentaMapper.toDTO(cuenta);
+                    // Obtener la información del cliente usando el Feign Client
+                    ClienteFeignDTO clienteF = clienteFeign.getClienteById(cuenta.getClienteId());
+                    cuentaDTO.setClienteFeignDTO(clienteF);
+                    return cuentaDTO;
+                })
                 .collect(Collectors.toList());
 
     }
