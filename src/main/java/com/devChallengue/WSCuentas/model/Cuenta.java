@@ -17,7 +17,7 @@ public class Cuenta {
     private String numeroCuenta;
 
     private String tipoCuenta;
-    private Double saldoInicial = 0.00;
+    private Double saldoInicial;
     private Boolean estado;
     // Se almacena el id del cliente (obtenido del microservicio de clientes)
     private Long clienteId;

@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/cuentas")
 public class CuentaController {
     @Autowired
-    private CuentaServiceImpl cuentaService;
+    private ICuentaService cuentaService;
 
     @PostMapping
     public ResponseEntity<CuentaDTO> createAccount(@RequestBody CuentaDTO cuentaDTO) {

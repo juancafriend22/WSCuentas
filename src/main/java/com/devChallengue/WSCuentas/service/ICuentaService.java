@@ -1,7 +1,6 @@
 package com.devChallengue.WSCuentas.service;
 
 import com.devChallengue.WSCuentas.dto.CuentaDTO;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -12,6 +11,5 @@ public interface ICuentaService {
     void deleteCuenta(Long id);
     CuentaDTO getCuentaById(Long id);
     List<CuentaDTO> getAllCuentas();
-
 
 }
