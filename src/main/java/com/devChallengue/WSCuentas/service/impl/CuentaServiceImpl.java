@@ -107,7 +107,7 @@ public class CuentaServiceImpl implements ICuentaService {
     public List<CuentaDTO> getAllCuentas() {
         List<Cuenta> accounts = cuentaRepository.findAll();
         if (accounts.isEmpty()) {
-            throw new RuntimeException("No existen cuentas guardadas");
+            throw new AccountNotFoundExcepcion("No existen cuentas guardadas");
         }
         return accounts.stream()
                 .map(cuenta -> {

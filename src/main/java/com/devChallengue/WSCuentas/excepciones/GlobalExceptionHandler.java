@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MovementNotFoundException.class)
-    public ResponseEntity<String> handleMovementNotFoundException(AccountNotFoundExcepcion mex) {
+    public ResponseEntity<String> handleMovementNotFoundException(MovementNotFoundException mex) {
         return new ResponseEntity<>(mex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
