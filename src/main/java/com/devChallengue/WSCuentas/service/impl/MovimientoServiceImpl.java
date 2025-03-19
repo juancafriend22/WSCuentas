@@ -42,7 +42,8 @@ public class MovimientoServiceImpl implements IMovimientoService {
         Movimiento movimiento = movimientoMapper.toEntity(movimientoDTO);
         double nuevoSaldo = cuenta.getSaldoInicial() + movimiento.getValor();
         if (nuevoSaldo < 0) {
-            throw new AccountNotFoundExcepcion("Fondos insuficientes");
+            throw new InsufficientFundsException("Fondos insuficientes para realizar la operación. Saldo disponible: "
+                    + cuenta.getSaldoInicial());
         }
         // Actualizamos el saldo en la cuenta
         try {
@@ -82,9 +83,6 @@ public class MovimientoServiceImpl implements IMovimientoService {
     @Override
     public List<MovimientoCustomResponseDTO> getMovimientosByClienteAndFecha(Long clienteId, LocalDate fechaInicio, LocalDate fechaFin) {
         ClienteFeignDTO clienteFeignDTO = clienteFeign.getClienteById(clienteId);
-        if (clienteFeignDTO == null) {
-            throw new ClientNotFoundException("El cliente con ID " + clienteId + " no existe.");
-        }
 
         List<Movimiento> movimientos = movimientoRepository.findByCuentaClienteIdAndFechaBetween(clienteId, fechaInicio, fechaFin);
         if (movimientos.isEmpty()) {

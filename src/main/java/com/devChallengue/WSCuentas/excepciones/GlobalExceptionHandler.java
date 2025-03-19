@@ -1,10 +1,14 @@
 package com.devChallengue.WSCuentas.excepciones;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.UUID;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -28,14 +32,27 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(mex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ClientNotFoundException.class)
-    public ResponseEntity<String> handleClientNotFoundException(ClientNotFoundException fex) {
-        return new ResponseEntity<>(fex.getMessage(), HttpStatus.NOT_FOUND);
+    @ExceptionHandler(feign.FeignException.NotFound.class)
+    public ResponseEntity<String> handleFeignNotFound(feign.FeignException.NotFound ex) {
+        // Si es un error 404 de cliente, maneja como ClientNotFoundException
+        return new ResponseEntity<>("Error en consultar al WSClientes: " + ex.contentUTF8(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<String> handleInsufficientFundsException(InsufficientFundsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenerixException(Exception ex) {
-        return new ResponseEntity<>("Error en procesamiento de info", HttpStatus.INTERNAL_SERVER_ERROR);
+        // Generar un identificador único para rastrear el error en logs
+        String errorId = UUID.randomUUID().toString();
+        // Registrar el error en logs con el identificador
+        log.error("Error inesperado - ID: {} - Mensaje: {}", errorId, ex.getMessage(), ex);
+
+        // Devolver un mensaje con el identificador para que el cliente pueda reportarlo
+        String errorMessage = "Ha ocurrido un error inesperado. Código de error: " + errorId;
+        return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

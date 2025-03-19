@@ -1,8 +1,6 @@
 package com.devChallengue.WSCuentas.service;
 
 import com.devChallengue.WSCuentas.dto.ClienteFeignDTO;
-import com.devChallengue.WSCuentas.excepciones.ClientNotFoundException;
-import feign.FeignException;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
