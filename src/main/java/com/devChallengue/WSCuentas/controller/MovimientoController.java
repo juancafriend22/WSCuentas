@@ -16,8 +16,11 @@ import java.util.List;
 @RequestMapping("/movimientos")
 public class MovimientoController {
 
-    @Autowired
-    private IMovimientoService movimientoService;
+    private final IMovimientoService movimientoService;
+
+    public MovimientoController(IMovimientoService movimientoService) {
+        this.movimientoService = movimientoService;
+    }
 
     @PostMapping("/cuenta/{cuentaId}")
     public ResponseEntity<MovimientoDTO> registrarMovimiento(@PathVariable Long cuentaId,
@@ -25,12 +28,21 @@ public class MovimientoController {
         MovimientoDTO registrado = movimientoService.registrarMovimiento(cuentaId, movimientoDTO);
         return new ResponseEntity<>(registrado, HttpStatus.CREATED);
     }
-    @GetMapping("/reporte/{cuentaId}")
+    @GetMapping("/reporte/cuentas/{cuentaId}")
     public ResponseEntity<List<MovimientoCustomResponseDTO>> getMovimientosByCuentaAndFecha(
             @PathVariable Long cuentaId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
         List<MovimientoCustomResponseDTO> movimientos = movimientoService.getMovimientosByCuentaAndFecha(cuentaId, fechaInicio, fechaFin);
+        return ResponseEntity.ok(movimientos);
+    }
+
+    @GetMapping("/reporte/cliente/{clienteId}")
+    public ResponseEntity<List<MovimientoCustomResponseDTO>> getMovimientosByClienteAndFecha(
+            @PathVariable Long clienteId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+        List<MovimientoCustomResponseDTO> movimientos = movimientoService.getMovimientosByClienteAndFecha(clienteId, fechaInicio, fechaFin);
         return ResponseEntity.ok(movimientos);
     }
 

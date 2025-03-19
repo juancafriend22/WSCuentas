@@ -2,6 +2,7 @@ package com.devChallengue.WSCuentas.service.impl;
 
 import com.devChallengue.WSCuentas.excepciones.AccountCreationException;
 import com.devChallengue.WSCuentas.excepciones.AccountNotFoundExcepcion;
+import com.devChallengue.WSCuentas.excepciones.ClientNotFoundException;
 import com.devChallengue.WSCuentas.service.ClienteFeignClient;
 import com.devChallengue.WSCuentas.dto.ClienteFeignDTO;
 import com.devChallengue.WSCuentas.dto.CuentaDTO;
@@ -9,30 +10,26 @@ import com.devChallengue.WSCuentas.mapper.CuentaMapper;
 import com.devChallengue.WSCuentas.model.Cuenta;
 import com.devChallengue.WSCuentas.repository.CuentaRepository;
 import com.devChallengue.WSCuentas.service.ICuentaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@RequiredArgsConstructor
 @Service
 public class CuentaServiceImpl implements ICuentaService {
 
-    @Autowired
-    private CuentaRepository cuentaRepository;
-
-    @Autowired
-    private CuentaMapper cuentaMapper;
-
-    @Autowired
-    private ClienteFeignClient clienteFeign; // Inyección del Feign Client
+    private final CuentaRepository cuentaRepository;
+    private final CuentaMapper cuentaMapper;
+    private final ClienteFeignClient clienteFeign;
 
     @Override
     public CuentaDTO createCuenta(CuentaDTO cuentaDTO) {
 
         ClienteFeignDTO clienteF = clienteFeign.getClienteById(cuentaDTO.getClienteFeignDTO().getId());
         if (clienteF == null) {
-            throw new AccountNotFoundExcepcion("El cliente con ID " + cuentaDTO.getClienteFeignDTO().getId() + " no existe");
+            throw new ClientNotFoundException("El cliente con ID " + cuentaDTO.getClienteFeignDTO().getId() + " no existe");
 
         }
         try {
@@ -53,7 +50,7 @@ public class CuentaServiceImpl implements ICuentaService {
                 .orElseThrow(() -> new AccountNotFoundExcepcion("Cuenta " + id + " no encontrada"));
         ClienteFeignDTO clienteF = clienteFeign.getClienteById(cuentaDTO.getClienteFeignDTO().getId());
         if (clienteF == null) {
-            throw new AccountNotFoundExcepcion("El cliente con ID " + cuentaDTO.getClienteFeignDTO().getId() + " no existe");
+            throw new ClientNotFoundException("El cliente  no existe");
 
         }
         try {
@@ -68,7 +65,7 @@ public class CuentaServiceImpl implements ICuentaService {
 
             // Convierte la entidad actualizada de regreso a dto
             CuentaDTO updatedCuentaDTO = cuentaMapper.toDTO(cuentaActu);
-            updatedCuentaDTO.setClienteFeignDTO(clienteF); // Ensure client info is set in DTO
+            updatedCuentaDTO.setClienteFeignDTO(clienteF);
             return updatedCuentaDTO;
 
 

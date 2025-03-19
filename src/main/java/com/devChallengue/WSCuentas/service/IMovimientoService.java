@@ -10,4 +10,5 @@ import java.util.List;
 public interface IMovimientoService {
     MovimientoDTO registrarMovimiento(Long cuentaId, MovimientoDTO movimientoDTO);
     List<MovimientoCustomResponseDTO> getMovimientosByCuentaAndFecha(Long cuentaId, LocalDate fechaInicio, LocalDate fechaFin);
+    List<MovimientoCustomResponseDTO> getMovimientosByClienteAndFecha(Long clienteId, LocalDate fechaInicio, LocalDate fechaFin);
 }

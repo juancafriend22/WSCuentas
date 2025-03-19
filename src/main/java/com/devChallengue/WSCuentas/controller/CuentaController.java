@@ -15,9 +15,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/cuentas")
 public class CuentaController {
-    @Autowired
-    private ICuentaService cuentaService;
 
+    private final ICuentaService cuentaService;
+
+    // Inyección de dependencias por constructor
+    public CuentaController(ICuentaService cuentaService) {
+        this.cuentaService = cuentaService;
+    }
     @PostMapping
     public ResponseEntity<CuentaDTO> createAccount(@RequestBody CuentaDTO cuentaDTO) {
         CuentaDTO created = cuentaService.createCuenta(cuentaDTO);

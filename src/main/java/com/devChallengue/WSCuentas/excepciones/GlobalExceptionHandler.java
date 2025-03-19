@@ -28,6 +28,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(mex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ClientNotFoundException.class)
+    public ResponseEntity<String> handleClientNotFoundException(ClientNotFoundException fex) {
+        return new ResponseEntity<>(fex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenerixException(Exception ex) {
         return new ResponseEntity<>("Error en procesamiento de info", HttpStatus.INTERNAL_SERVER_ERROR);

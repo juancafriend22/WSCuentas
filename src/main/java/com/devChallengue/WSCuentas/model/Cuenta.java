@@ -13,7 +13,7 @@ public class Cuenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(unique = true)
     private String numeroCuenta;
     private String tipoCuenta;
     private Double saldoInicial;
